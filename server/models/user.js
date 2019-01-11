@@ -8,8 +8,8 @@ const userSchema = new Schema({
     password: String
 })
 
-//On save hook, encrypt password
-//Before saving a model, run this function (that is what .pre() right below means)
+//On save hook, encrypt password 
+//Before saving a model, run this function (that is what .pre() right below means)!
 userSchema.pre('save', function (next) {
     const user = this; //here it is getting access to the user model
 
