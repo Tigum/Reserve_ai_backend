@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const cors = require('cors')
 
 //DB Setup
-mongoose.connect('mongodb://localhost/auth', { useNewUrlParser: true })  //auth is the name of the DB created
+mongoose.connect('mongodb://localhost/reserve_ai', { useNewUrlParser: true })  //auth is the name of the DB created
 
 //App Setup
 app.use(morgan('combined'));
