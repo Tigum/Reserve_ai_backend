@@ -7,14 +7,28 @@ function tokenForUser(user) {
     return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 
-exports.signin = function (req, res, next) {
+exports.signin = async function (req, res, next) {
     //User authenticated and return token here
-    res.send({ token: tokenForUser(req.user) })
+
+    const token = tokenForUser(req.user)
+    try {
+        const result = await jwt.decode(token, config.secret)
+        if (result) {
+            try {
+                var user = await User.findOne({ _id: result.sub })
+                res.send({ ...user._doc, token: token })
+            } catch (err) {
+                res.send({ error: 'User could not be found' })
+            }
+        }
+    } catch (err) {
+        res.send({ error: 'Login or password not valid' })
+    }
 }
 
 exports.signup = function (req, res, next) {
     const userInfo = req.body;
-
+    console.log('userInfo', userInfo)
     //See if a user with a given email exists
     User.findOne({ email: userInfo.email }, function (err, existingUser) {
         if (err) { return next(err) }
@@ -33,15 +47,15 @@ exports.signup = function (req, res, next) {
             password: userInfo.password,
             role: 'client',
             imageUrl: 'N/A',
-            facebookRegistration: false,
-            phone: userInfo.phone
+            facebookRegistration: userInfo.facebookRegistration || false,
+            phone: userInfo.phone,
+            name: userInfo.name
         })
 
-        user.save(function (err) {
+        user.save(function (err, result) {
             if (err) { return next(err) }
-
             //Respond to request indicating the user was created
-            res.json({ token: tokenForUser(user) })
+            res.json({ token: tokenForUser(user), user: result })
         })
     })
 }
@@ -50,16 +64,60 @@ exports.uploadPicture = function (req, res, next) {
     const imageUrl = req.body.imageUrl
     const userId = req.body.userId
 
+    console.log('imageUrl3', imageUrl)
+    console.log('userId3', userId)
+
     User.findOne({ _id: userId }, function (err, user) {
+        console.log('err3', err)
+        console.log('user3', user)
+
         if (err) { return next(err) }
 
         if (!user) {
             return res.status(422).send({ error: 'User does not exist' })
         }
 
-        User.update({ _id: userId }, { $set: { imageUrl: imageUrl } })
-
-        res.send({ imageUrl: imageUrl })
+        User.update({ _id: userId }, { $set: { imageUrl: imageUrl } }, function (err) {
+            if (err) { return next(err) }
+            res.send({ imageUrl: imageUrl })
+        })
     })
+}
 
+exports.loadUser = async function (req, res, next) {
+    const token = req.query.token
+    try {
+        const result = await jwt.decode(token, config.secret)
+        if (result) {
+            try {
+                const user = await User.findOne({ _id: result.sub })
+                res.send({ ...user._doc, token: token })
+            } catch (err) {
+                if (err) {
+                    return res.status(422).send({ error: 'User does not exist' })
+                }
+            }
+        }
+    } catch (err) {
+        if (err) {
+            return res.status(422).send({ error: 'User does not exist' })
+        }
+    }
+}
+
+exports.checkIfUserExistsByEmail = async function (req, res, next) {
+    const email = req.query.email
+    console.log('EMAIL', email)
+    try {
+        const user = await User.findOne({ email: email })
+
+        if(user) {
+            res.json({ ...user._doc })
+        } 
+        
+    } catch (err) {
+        if (err) {
+            return res.status(422).send({ error: 'User does not exist' })
+        }
+    }
 }
