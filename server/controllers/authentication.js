@@ -85,7 +85,7 @@ exports.admSignup = function (req, res, next) {
             phone: userInfo.phone,
             name: userInfo.name,
             //Admin features
-            nameSearch: userInfo.name,
+            companyNameSearch: userInfo.companyName,
             companyName: userInfo.companyName,
             startHour: userInfo.startHour,
             endHour: userInfo.endHour,

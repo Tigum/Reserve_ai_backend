@@ -12,7 +12,7 @@ const userSchema = new Schema({
     role: String,
     facebookRegistration: Boolean,
     ///Admin features below
-    nameSearch: { type: String, lowercase: true },
+    companyNameSearch: { type: String, lowercase: true },
     companyName: String,
     startHour: String,
     endHour: String,
