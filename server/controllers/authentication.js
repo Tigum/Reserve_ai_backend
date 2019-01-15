@@ -60,6 +60,40 @@ exports.signup = function (req, res, next) {
     })
 }
 
+exports.admSignup = function (req, res, next) {
+    const userInfo = req.body;
+    console.log('userInfo', userInfo)
+    //See if a user with a given email exists
+    User.findOne({ email: userInfo.email }, function (err, existingUser) {
+        if (err) { return next(err) }
+
+        // if (!userInfo.email || !userInfo.password || !userInfo.name || !userInfo.phone) {
+        //     return res.status(422).send({ error: 'You must provide an email and password' })
+        // }
+        // If a user with an email already exists, return an error
+        if (existingUser) {
+            return res.status(422).send({ error: 'Email is in use' })
+        }
+
+        //If a user with an email does NOT exist, create new user and sabe record
+        const user = new User({
+            email: userInfo.email,
+            password: userInfo.password,
+            role: 'client',
+            imageUrl: 'N/A',
+            facebookRegistration: userInfo.facebookRegistration || false,
+            phone: userInfo.phone,
+            name: userInfo.name
+        })
+
+        user.save(function (err, result) {
+            if (err) { return next(err) }
+            //Respond to request indicating the user was created
+            res.json({ token: tokenForUser(user), user: result })
+        })
+    })
+}
+
 exports.uploadPicture = function (req, res, next) {
     const imageUrl = req.body.imageUrl
     const userId = req.body.userId
@@ -113,11 +147,14 @@ exports.checkIfUserExistsByEmail = async function (req, res, next) {
 
         if(user) {
             res.json({ ...user._doc })
-        } 
+        } else {
+            res.send(null)
+        }
         
     } catch (err) {
+        console.log('ENTROU ERRO')
         if (err) {
-            return res.status(422).send({ error: 'User does not exist' })
+           res.status(422).send({ error: 'User does not exist' })
         }
     }
 }

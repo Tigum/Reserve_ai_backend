@@ -9,7 +9,10 @@ const userSchema = new Schema({
     name: String,
     imageUrl: String,
     phone: String,
-    role: String
+    role: String,
+    facebookRegistration: Boolean
+    ///Admin features below
+    
 })
 
 //On save hook, encrypt password 
