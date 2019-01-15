@@ -10,9 +10,28 @@ const userSchema = new Schema({
     imageUrl: String,
     phone: String,
     role: String,
-    facebookRegistration: Boolean
+    facebookRegistration: Boolean,
     ///Admin features below
-    
+    nameSearch: { type: String, lowercase: true },
+    companyName: String,
+    startHour: String,
+    endHour: String,
+    monday: Object,
+    tuesday: Object,
+    wednesday: Object,
+    thursday: Object,
+    friday: Object,
+    saturday: Object,
+    sunday: Object,
+    state: String,
+    city: String,
+    citySearch: { type: String, lowercase: true },
+    streetName: String,
+    number: String,
+    additionalInfo: String,
+    cep: String,
+    serviceAtHome: Boolean,
+    areasSelected: Array
 })
 
 //On save hook, encrypt password 
@@ -35,9 +54,9 @@ userSchema.pre('save', function (next) {
 })
 
 
-userSchema.methods.comparePassword = function(candidatePassword, callback) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
-        if(err) { return callback(err)}
+userSchema.methods.comparePassword = function (candidatePassword, callback) {
+    bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
+        if (err) { return callback(err) }
         callback(null, isMatch)
     })
 }

@@ -62,7 +62,7 @@ exports.signup = function (req, res, next) {
 
 exports.admSignup = function (req, res, next) {
     const userInfo = req.body;
-    console.log('userInfo', userInfo)
+    console.log('userInfoAdmin', userInfo)
     //See if a user with a given email exists
     User.findOne({ email: userInfo.email }, function (err, existingUser) {
         if (err) { return next(err) }
@@ -79,11 +79,32 @@ exports.admSignup = function (req, res, next) {
         const user = new User({
             email: userInfo.email,
             password: userInfo.password,
-            role: 'client',
+            role: 'admin',
             imageUrl: 'N/A',
-            facebookRegistration: userInfo.facebookRegistration || false,
+            facebookRegistration: false,
             phone: userInfo.phone,
-            name: userInfo.name
+            name: userInfo.name,
+            //Admin features
+            nameSearch: userInfo.name,
+            companyName: userInfo.companyName,
+            startHour: userInfo.startHour,
+            endHour: userInfo.endHour,
+            monday: userInfo.monday,
+            tuesday: userInfo.tuesday,
+            wednesday: userInfo.wednesday,
+            thursday: userInfo.thursday,
+            friday: userInfo.friday,
+            saturday: userInfo.saturday,
+            sunday: userInfo.sunday,
+            state: userInfo.state,
+            city: userInfo.city,
+            citySearch: userInfo.city,
+            streetName: userInfo.streetName,
+            number: userInfo.number,
+            additionalInfo: userInfo.additionalInfo,
+            cep: userInfo.cep,
+            serviceAtHome: userInfo.serviceAtHome,
+            areasSelected: userInfo.areasSelected
         })
 
         user.save(function (err, result) {
@@ -145,16 +166,16 @@ exports.checkIfUserExistsByEmail = async function (req, res, next) {
     try {
         const user = await User.findOne({ email: email })
 
-        if(user) {
+        if (user) {
             res.json({ ...user._doc })
         } else {
             res.send(null)
         }
-        
+
     } catch (err) {
         console.log('ENTROU ERRO')
         if (err) {
-           res.status(422).send({ error: 'User does not exist' })
+            res.status(422).send({ error: 'User does not exist' })
         }
     }
 }
