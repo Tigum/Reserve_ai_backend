@@ -50,10 +50,29 @@ exports.deactivateService = async function (req, res) {
 exports.deleteService = async function (req, res) {
     const serviceId = req.query.serviceId
     try {
-        await Service.remove({ _id: serviceId})
+        await Service.remove({ _id: serviceId })
         res.send('Service deleted successfully')
     } catch (err) {
         console.log(err)
         res.send('Error while deleting service:' + err)
+    }
+}
+
+exports.editService = async function (req, res) {
+    const service = req.body
+    console.log('SERVICEEEE', service)
+    const serviceUpdate = {
+        employeesSelected: service.employeesSelected,
+        serviceName: service.serviceName,
+        serviceDescription: service.serviceDescription,
+        serviceDuration: service.serviceDuration,
+        servicePrice: service.servicePrice,
+    }
+    try {
+        await Service.updateOne({ _id: service.serviceId }, { $set: serviceUpdate })
+        res.send('Service updated successfully')
+    } catch (err) {
+        console.log(err)
+        res.send('Error while editing service: ' + err)
     }
 }

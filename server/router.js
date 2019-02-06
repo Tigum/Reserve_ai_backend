@@ -25,6 +25,7 @@ module.exports = function (app) {
     app.post('/addService', Service.addServices)
     app.post('/activateService', Service.activateService)
     app.post('/deactivateService', Service.deactivateService)
+    app.post('/editService', Service.editService)
 
     app.delete('/deleteService', Service.deleteService)
 
