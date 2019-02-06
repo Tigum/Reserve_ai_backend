@@ -45,7 +45,7 @@ exports.signup = function (req, res, next) {
         const user = new User({
             email: userInfo.email,
             password: userInfo.password,
-            role: 'client',
+            role: 'Cliente',
             imageUrl: 'N/A',
             facebookRegistration: userInfo.facebookRegistration || false,
             phone: userInfo.phone,
@@ -79,7 +79,7 @@ exports.admSignup = function (req, res, next) {
         const user = new User({
             email: userInfo.email,
             password: userInfo.password,
-            role: 'admin',
+            role: 'Proprietário',
             imageUrl: 'N/A',
             facebookRegistration: false,
             phone: userInfo.phone,
