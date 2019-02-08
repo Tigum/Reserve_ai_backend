@@ -60,7 +60,6 @@ exports.deleteService = async function (req, res) {
 
 exports.editService = async function (req, res) {
     const service = req.body
-    console.log('SERVICEEEE', service)
     const serviceUpdate = {
         employeesSelected: service.employeesSelected,
         serviceName: service.serviceName,

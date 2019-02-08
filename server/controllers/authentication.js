@@ -28,7 +28,6 @@ exports.signin = async function (req, res, next) {
 
 exports.signup = function (req, res, next) {
     const userInfo = req.body;
-    console.log('userInfo', userInfo)
     //See if a user with a given email exists
     User.findOne({ email: userInfo.email }, function (err, existingUser) {
         if (err) { return next(err) }
@@ -62,7 +61,6 @@ exports.signup = function (req, res, next) {
 
 exports.admSignup = function (req, res, next) {
     const userInfo = req.body;
-    console.log('userInfoAdmin', userInfo)
     //See if a user with a given email exists
     User.findOne({ email: userInfo.email }, function (err, existingUser) {
         if (err) { return next(err) }
@@ -119,12 +117,7 @@ exports.uploadPicture = function (req, res, next) {
     const imageUrl = req.body.imageUrl
     const userId = req.body.userId
 
-    console.log('imageUrl3', imageUrl)
-    console.log('userId3', userId)
-
     User.findOne({ _id: userId }, function (err, user) {
-        console.log('err3', err)
-        console.log('user3', user)
 
         if (err) { return next(err) }
 
@@ -162,7 +155,6 @@ exports.loadUser = async function (req, res, next) {
 
 exports.checkIfUserExistsByEmail = async function (req, res, next) {
     const email = req.query.email
-    console.log('EMAIL', email)
     try {
         const user = await User.findOne({ email: email })
 
@@ -173,7 +165,6 @@ exports.checkIfUserExistsByEmail = async function (req, res, next) {
         }
 
     } catch (err) {
-        console.log('ENTROU ERRO')
         if (err) {
             res.status(422).send({ error: 'User does not exist' })
         }
